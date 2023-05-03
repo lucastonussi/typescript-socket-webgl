@@ -1,0 +1,64 @@
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>=title</title>
+<div id="wrapper">
+  <h2>=header</h2>
+  <p>=about</p>
+  <canvas id="canvas" width="600" height="400"></canvas>
+</div>
+<div id="wrapper">
+  <button id="btn" onclick="move('left')">left</button>
+  <button id="btn" onclick="move('right')">right</button>
+  <button id="btn" onclick="move('up')">up</button>
+  <button id="btn" onclick="move('down')">down</button>
+</div>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js" integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ==" crossorigin="anonymous" defer="defer"></script>
+<script>
+  let socket = io();
+  let storage = {
+    movements: []
+  }
+  let control = {
+    moviments: null
+  }
+  
+  let objProxy = new Proxy(control, {
+    set(target, key, value) {
+      for (const move of storage.movements) {
+        console.log(move.msg)
+      }
+      storage.movements = [];
+    }
+  })
+  
+  control = objProxy;
+  
+  function move(direction) {
+    socket.emit('move_player', {
+      movement: direction
+    });
+  }
+  
+  socket.on('other_players_moves', function(data) {
+    storage.movements.push(data);
+    control.movements = 'moved';
+  });
+</script>
+
+<style>
+  #wrapper {
+    margin: 0 auto;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  #btn {
+    margin: 2px;
+  }
+  
+  #canvas {
+    border: 1px solid black;
+  }
+</style>

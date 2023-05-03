@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Typescript game project",
+      "program": "${workspaceFolder}/src/index.ts",
+      "sourceMaps": true,
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "runtimeExecutable": "/home/ark/.nvm/versions/node/v18.16.0/bin/node",
+    }
+  ]
+}

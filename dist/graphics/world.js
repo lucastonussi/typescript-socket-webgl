@@ -1,14 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.main = void 0;
-function main() {
+export function main() {
     let webgl = captureWebgl();
     if (!webgl) {
         return;
     }
     startWindow(webgl);
 }
-exports.main = main;
 function captureWebgl() {
     let canvas, webgl;
     canvas = document.querySelector("#canvas");
@@ -123,5 +119,5 @@ function drawArrays(webgl) {
 //   if (event.key === "ArrowLeft")  {}
 //   if (event.key === "ArrowRight") {}
 // });
-exports.default = { main };
+export default { main };
 //# sourceMappingURL=world.js.map

@@ -1,23 +1,19 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const http_1 = tslib_1.__importDefault(require("http"));
-const socketIO = tslib_1.__importStar(require("socket.io"));
-const express_1 = tslib_1.__importDefault(require("express"));
-const path_1 = tslib_1.__importDefault(require("path"));
+import http from "http";
+import * as socketIO from "socket.io";
+import express from "express";
+import root from "app-root-path";
 var GameServer;
 (function (GameServer) {
-    class App {
-        constructor(port) {
-            this.port = port;
+    class SocketPlug {
+        io;
+        server;
+        players;
+        constructor(server) {
+            this.server = server;
             this.players = [];
-            const app = (0, express_1.default)();
-            app.use(express_1.default.static(path_1.default.join(__dirname, '../client')));
-            app.get("/", (req, res) => {
-                res.sendFile(path_1.default.join(__dirname, '../../views/index.html'));
-            });
-            this.server = new http_1.default.Server(app);
             this.io = new socketIO.Server(this.server);
+        }
+        perform() {
             this.io.sockets.on("connection", (socket) => {
                 console.log(`a user connection ${socket.id}`);
                 this.players.push(socket);
@@ -40,8 +36,22 @@ var GameServer;
                 });
             });
         }
-        start() {
+    }
+    GameServer.SocketPlug = SocketPlug;
+    class App {
+        port;
+        server;
+        socketPlug;
+        constructor(port) {
+            this.port = port;
+            const app = express();
+            app.use(express.static(`${root.path}/dist`));
+            this.server = new http.Server(app);
+            this.socketPlug = new SocketPlug(this.server);
+        }
+        perform() {
             console.log("starting app");
+            this.socketPlug.perform();
             this.server.listen(this.port);
             console.log(`Server listening on port ${this.port}.`);
         }
@@ -49,5 +59,5 @@ var GameServer;
     GameServer.App = App;
 })(GameServer || (GameServer = {}));
 let app = new GameServer.App(3000);
-app.start();
+app.perform();
 //# sourceMappingURL=index.js.map

@@ -1,30 +1,23 @@
 import http from "http";
 import * as socketIO from "socket.io";
-import express, { Express, Response, Request } from "express";
-import path from 'path';
+import express, { Express } from "express";
+import root from "app-root-path";
 
 namespace GameServer {
-  export class App {
-    private server: http.Server;
-    private port: number;
-    private players: socketIO.Socket[];
+  export class SocketPlug {
     private io: socketIO.Server;
+    private server: http.Server;
+    private players: socketIO.Socket[];
 
-    public constructor(port: number) {
-      this.port = port;
+    public constructor(server: http.Server) {
+      this.server = server;
+
       this.players = [];
 
-      const app: Express = express();
-
-      app.use(express.static(path.join(__dirname, '../client')));
-
-      app.get("/", (req: Request, res: Response) => {
-        res.sendFile(path.join(__dirname, '../../views/index.html'));
-      });
-
-      this.server = new http.Server(app);
       this.io = new socketIO.Server(this.server);
+    }
 
+    public perform() {
       this.io.sockets.on("connection", (socket: socketIO.Socket) => {
         console.log(`a user connection ${socket.id}`);
 
@@ -57,9 +50,28 @@ namespace GameServer {
         });
       });
     }
+  }
 
-    public start() {
+  export class App {
+    private port: number;
+    private server: http.Server;
+    private socketPlug: SocketPlug;
+
+    public constructor(port: number) {
+      this.port = port;
+
+      const app: Express = express();
+
+      app.use(express.static(`${root.path}/dist`));
+
+      this.server = new http.Server(app);
+      this.socketPlug = new SocketPlug(this.server);
+    }
+
+    public perform() {
       console.log("starting app");
+
+      this.socketPlug.perform();
 
       this.server.listen(this.port);
 
@@ -69,4 +81,4 @@ namespace GameServer {
 }
 
 let app = new GameServer.App(3000);
-app.start();
+app.perform();

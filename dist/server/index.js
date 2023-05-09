@@ -1,13 +1,13 @@
-import http from "http";
-import * as socketIO from "socket.io";
-import express from "express";
-import root from "app-root-path";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const http_1 = tslib_1.__importDefault(require("http"));
+const socketIO = tslib_1.__importStar(require("socket.io"));
+const express_1 = tslib_1.__importDefault(require("express"));
+const app_root_path_1 = tslib_1.__importDefault(require("app-root-path"));
 var GameServer;
 (function (GameServer) {
     class SocketPlug {
-        io;
-        server;
-        players;
         constructor(server) {
             this.server = server;
             this.players = [];
@@ -39,14 +39,11 @@ var GameServer;
     }
     GameServer.SocketPlug = SocketPlug;
     class App {
-        port;
-        server;
-        socketPlug;
         constructor(port) {
             this.port = port;
-            const app = express();
-            app.use(express.static(`${root.path}/dist`));
-            this.server = new http.Server(app);
+            const app = (0, express_1.default)();
+            app.use(express_1.default.static(`${app_root_path_1.default.path}/dist`));
+            this.server = new http_1.default.Server(app);
             this.socketPlug = new SocketPlug(this.server);
         }
         perform() {

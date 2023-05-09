@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES2019",
+    "module": "CommonJS",
     "pretty": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -23,8 +23,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": [
-      "es5",
-      "es6",
       "dom"
     ]
   },

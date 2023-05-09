@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "name": "Typescript game project",
-      "program": "${workspaceFolder}/src/index.ts",
+      "program": "${workspaceFolder}/src/server/index.ts",
       "sourceMaps": true,
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
